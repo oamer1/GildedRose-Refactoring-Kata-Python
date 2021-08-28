@@ -9,17 +9,13 @@ class GildedRose(object):
         special_items = [
             "Aged Brie",
             "Backstage passes to a TAFKAL80ETC concert",
-            "Backstage passes to a TAFKAL80ETC concert",
+            "Sulfuras, Hand of Ragnaros",
         ]
         for item in self.items:
-            if (
-                item.name != "Aged Brie"
-                and item.name != "Backstage passes to a TAFKAL80ETC concert"
-            ):
-                if item.quality > 0:
-                    if item.name != "Sulfuras, Hand of Ragnaros":
-                        item.quality = item.quality - 1
-            else:
+            if item.name not in special_items and item.quality > 0:
+                item.quality = item.quality - 1
+
+            if item.name in ("Aged Brie", "Backstage passes to a TAFKAL80ETC concert"):
                 if item.quality < 50:
                     item.quality = item.quality + 1
                     if item.name == "Backstage passes to a TAFKAL80ETC concert":
