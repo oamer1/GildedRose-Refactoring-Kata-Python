@@ -56,7 +56,7 @@ def test_quality_never_greater_50(item):
 
 
 # Once the sell by date has passed, Quality degrades twice as fast
-def test_quality_non_special_item_passed_date_degrades_twice():
+def test_quality_ordinary_item_passed_date_degrades_twice():
     item = Item("Foo", 0, 10)
     initial_quality = item.quality
     GildedRose([item]).update_quality()
