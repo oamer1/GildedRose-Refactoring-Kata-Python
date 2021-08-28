@@ -55,6 +55,14 @@ def test_quality_never_greater_50(item):
     assert item.quality <= 50
 
 
+# Once the sell by date has passed, Quality degrades twice as fast
+def test_quality_non_special_item_passed_date_degrades_twice():
+    item = Item("Foo", 0, 10)
+    initial_quality = item.quality
+    GildedRose([item]).update_quality()
+    assert item.quality == initial_quality - 2
+
+
 # "Aged Brie" actually increases in Quality the older it gets
 def test_aged_brie_gets_older_quality_increase():
     item = Item("Aged Brie", 10, 10)
