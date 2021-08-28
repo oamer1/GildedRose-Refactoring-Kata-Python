@@ -11,6 +11,15 @@ class GildedRose(object):
             quality = quality + increment_unit
         return quality
 
+    def update_ordinary_item(self, item):
+        """Handle the logic of ordinary item"""
+        # if -ve sell in quality degrades twice
+        if item.sell_in <= 0:
+            item.quality = self.increment_quality(item.quality, -2)
+        else:
+            item.quality = self.increment_quality(item.quality, -1)
+        item.sell_in = item.sell_in - 1
+
     def update_backstage_passes_item(self, item):
         """Handle the logic of "Backstage passes to a TAFKAL80ETC concert" """
 
@@ -20,6 +29,16 @@ class GildedRose(object):
             item.quality = self.increment_quality(item.quality, 1)
         if item.sell_in < 0:
             item.quality = 0
+        item.sell_in = item.sell_in - 1
+
+    def update_sulfuras_item(self, item):
+        """Handle the logic of salfurus, do nothing"""
+        return item
+
+    def update_aged_brie(self, item):
+        """Handle the logic of "Aged Brie" """
+        item.quality = self.increment_quality(item.quality, 1)
+        item.sell_in = item.sell_in - 1
 
     def update_quality(self):
         special_items = [
@@ -29,22 +48,16 @@ class GildedRose(object):
         ]
         for item in self.items:
             if item.name not in special_items:
-                item.quality = item.quality - 1
+                self.update_ordinary_item(item)
 
             if item.name == "Backstage passes to a TAFKAL80ETC concert":
                 self.update_backstage_passes_item(item)
 
             if item.name == "Aged Brie":
-                item.quality = self.increment_quality(item.quality, 1)
+                self.update_aged_brie(item)
 
-            if item.name != "Sulfuras, Hand of Ragnaros":
-                item.sell_in = item.sell_in - 1
-            if item.sell_in < 0:
-                if item.name not in special_items:
-                    item.quality = self.increment_quality(item.quality, -1)
-
-                if item.name == "Aged Brie":
-                    item.quality = self.increment_quality(item.quality, 1)
+            if item.name == "Sulfuras, Hand of Ragnaros":
+                self.update_sulfuras_item(item)
 
 
 class Item:
