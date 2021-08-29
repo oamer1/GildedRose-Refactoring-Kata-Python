@@ -6,11 +6,11 @@ Based on the [multi-language repository](https://github.com/emilybache/GildedRos
 The main idea of this problem , you are working with legacy code with no tests !
 You are asked to add a feature , and handed the code requirements .  
 To add a feature, you must :  
-1- Understand requirements  
-2- Write a good test suite   
-3- Refactor code without breaking and never altering Item class otherwise a goblin devloper will devour you .  
+1. Understand requirements  
+2. Write a good test suite   
+3. Refactor code without breaking and never altering Item class otherwise a goblin devloper will devour you .  
 (This is meant to impose constrain on you so you respect the interface and do not break other legacy code that depend on it)  
-4-Finally add the feature !!  
+4. Finally add the feature !!  
 
 ## Resources
 - Amazing Ruby refactoring talk by Sandi Metz [All the Little Things by Sandi Metz](https://www.youtube.com/watch?v=8bZh5LMaSmE&t=1228s)
