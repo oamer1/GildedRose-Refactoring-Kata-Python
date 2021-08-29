@@ -52,21 +52,14 @@ class GildedRose(object):
     def update_quality(self):
 
         for item in self.items:
-
-            if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                self.update_backstage_passes_item(item)
-
-            elif item.name == "Aged Brie":
-                self.update_aged_brie(item)
-
-            elif item.name == "Sulfuras, Hand of Ragnaros":
-                self.update_sulfuras_item(item)
-
-            elif item.name == "Conjured":
-                self.update_conjured_item(item)
-
-            else:
-                self.update_ordinary_item(item)
+            update_factory = {
+                "Backstage passes to a TAFKAL80ETC concert": self.update_backstage_passes_item,
+                "Aged Brie": self.update_aged_brie,
+                "Sulfuras, Hand of Ragnaros": self.update_sulfuras_item,
+                "Conjured": self.update_conjured_item,
+            }
+            update_func = update_factory.get(item.name, self.update_ordinary_item)
+            return update_func(item)
 
 
 class Item:
