@@ -1,65 +1,11 @@
 # -*- coding: utf-8 -*-
 
-
-class GildedRose(object):
-    def __init__(self, items):
-        self.items = items
-
-    def increment_quality(self, quality, increment_unit):
-        """Handles quality increments and ensures quality >0 and <50"""
-        if quality > 0 and quality < 50:
-            quality = quality + increment_unit
-        return quality
-
-    def update_Normal_item(self, item):
-        """Handle the logic of Normal item"""
-        # if -ve sell in quality degrades twice
-        if item.sell_in <= 0:
-            item.quality = self.increment_quality(item.quality, -2)
-        else:
-            item.quality = self.increment_quality(item.quality, -1)
-        item.sell_in = item.sell_in - 1
-
-    def update_backstage_passes_item(self, item):
-        """Handle the logic of "Backstage passes to a TAFKAL80ETC concert" """
-
-        if item.sell_in < 11:
-            item.quality = self.increment_quality(item.quality, 2)
-        if item.sell_in < 6:
-            item.quality = self.increment_quality(item.quality, 1)
-        if item.sell_in < 0:
-            item.quality = 0
-        item.sell_in = item.sell_in - 1
-
-    def update_sulfuras_item(self, item):
-        """Handle the logic of salfurus, do nothing"""
-        return item
-
-    def update_aged_brie(self, item):
-        """Handle the logic of "Aged Brie" """
-        item.quality = self.increment_quality(item.quality, 1)
-        item.sell_in = item.sell_in - 1
-
-    def update_conjured_item(self, item):
-        """Handle the logic of Conjured item"""
-        # if -ve sell in quality degrades twice
-        if item.sell_in <= 0:
-            item.quality = self.increment_quality(item.quality, -4)
-        else:
-            item.quality = self.increment_quality(item.quality, -2)
-        item.sell_in = item.sell_in - 1
-
-    def update_quality(self):
-
-        for item in self.items:
-            update_factory = {
-                "Backstage passes to a TAFKAL80ETC concert": self.update_backstage_passes_item,
-                "Aged Brie": self.update_aged_brie,
-                "Sulfuras, Hand of Ragnaros": self.update_sulfuras_item,
-                "Conjured": self.update_conjured_item,
-            }
-            update_func = update_factory.get(item.name, self.update_Normal_item)
-            return update_func(item)
+# Don't touch me
+"""
+do not alter the Item class or Items property as those belong to the
+goblin in the corner who will insta-rage and one-shot you as he doesn't believe in shared code
+ownership
+"""
 
 
 class Item:
@@ -70,3 +16,119 @@ class Item:
 
     def __repr__(self):  # pragma: no cover
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+
+
+# It we are allowed to change Item class , this class is not necessary
+# Since we can add this method into Item, but the whole point of this exercise
+# to add feature to the legacy code of the goblin !
+class Normal(Item):
+    max_quality = 50
+    unit_delta = -1
+
+    def increment_quality(self, increment_unit):
+        """Handles quality increments and ensures quality >0 and <50 , invarient"""
+        if self.quality > 0 and self.quality < self.max_quality:
+            self.quality = self.quality + increment_unit
+        return self.quality
+
+    def day_tick(self):
+        # Advance day
+        self.sell_in -= 1
+
+    def update(self):
+        # if -ve sell in quality degrades twice
+        if self.sell_in <= 0:
+            self.quality = self.increment_quality(2 * self.unit_delta)
+        else:
+            self.quality = self.increment_quality(self.unit_delta)
+        self.day_tick()
+
+
+class AgedBrie(Normal):
+    """
+    "Aged Brie" actually increases in Quality the older it gets
+    """
+
+    unit_delta = 1
+
+    def update(self):
+        self.quality = self.increment_quality(self.unit_delta)
+        self.day_tick()
+
+
+class Sulfuras(Normal):
+    """
+    Sulfuras, Hand of Ragnaros
+    "Sulfuras", being a legendary item, never has to be sold or decreases in Quality
+    """
+
+    def update(self):
+        pass
+
+
+class Conjured(Normal):
+    """
+    "Conjured" items degrade in Quality twice as fast as normal items
+    """
+
+    unit_delta = 2 * Normal.unit_delta
+
+
+class Backstage(Normal):
+    """
+    Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
+    Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
+    Quality drops to 0 after the concert
+    """
+
+    def update(self):
+        if self.sell_in < 0:
+            self.quality = 0
+        elif self.sell_in < 6:
+            self.quality = self.increment_quality(3)
+        elif self.sell_in < 11:
+            self.quality = self.increment_quality(2)
+
+        self.day_tick()
+
+
+class GildedRose(object):
+    def __init__(self, items):
+        self.items = items
+
+    @staticmethod
+    def item_factory(item):
+        special_items = {
+            "Backstage passes to a TAFKAL80ETC concert": Backstage,
+            "Aged Brie": AgedBrie,
+            "Sulfuras, Hand of Ragnaros": Sulfuras,
+            "Conjured": Conjured,
+        }
+        item_class = special_items.get(item.name, Normal)
+        return item_class(item.name, item.sell_in, item.quality)
+
+    def update(self):
+        for item in self.items:
+            gilded_item = self.item_factory(item)
+            gilded_item.update()
+            self.update_item_attrs(item, gilded_item)
+
+    def update_item_attrs(self, item, gilded_item):
+        """
+        Update item attrs so I dont have to change all of tests since
+        tests assume GildedRose directly update item attrs.
+        ** Also since this is a legacy code , returning gilded items, instead of
+        directly manipulating items as in original code might break any existing code ! **
+        """
+        for attr, value in gilded_item.__dict__.items():
+            setattr(item, attr, value)
+
+
+# # item = Item("Backstage passes to a TAFKAL80ETC concert", -3, 5)
+# # v = GildedRose([item]).update()
+# # print(item.quality)
+# n = Item("Backstage passes to a TAFKAL80ETC concert", -3, 5)
+# m = GildedRose([n])
+# print(n.quality)
+# m.update()
+# print(n.quality)
