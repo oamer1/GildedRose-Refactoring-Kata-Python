@@ -119,16 +119,7 @@ class GildedRose(object):
         tests assume GildedRose directly update item attrs.
         ** Also since this is a legacy code , returning gilded items, instead of
         directly manipulating items as in original code might break any existing code ! **
+        Can be avoided if gilded classes initialised with item object instead of item attrs.
         """
         for attr, value in gilded_item.__dict__.items():
             setattr(item, attr, value)
-
-
-# # item = Item("Backstage passes to a TAFKAL80ETC concert", -3, 5)
-# # v = GildedRose([item]).update()
-# # print(item.quality)
-# n = Item("Backstage passes to a TAFKAL80ETC concert", -3, 5)
-# m = GildedRose([n])
-# print(n.quality)
-# m.update()
-# print(n.quality)
