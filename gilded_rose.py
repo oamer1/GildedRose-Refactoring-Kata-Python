@@ -50,27 +50,23 @@ class GildedRose(object):
         item.sell_in = item.sell_in - 1
 
     def update_quality(self):
-        special_items = [
-            "Aged Brie",
-            "Backstage passes to a TAFKAL80ETC concert",
-            "Sulfuras, Hand of Ragnaros",
-            "Conjured",
-        ]
+
         for item in self.items:
-            if item.name not in special_items:
-                self.update_ordinary_item(item)
 
             if item.name == "Backstage passes to a TAFKAL80ETC concert":
                 self.update_backstage_passes_item(item)
 
-            if item.name == "Aged Brie":
+            elif item.name == "Aged Brie":
                 self.update_aged_brie(item)
 
-            if item.name == "Sulfuras, Hand of Ragnaros":
+            elif item.name == "Sulfuras, Hand of Ragnaros":
                 self.update_sulfuras_item(item)
 
-            if item.name == "Conjured":
+            elif item.name == "Conjured":
                 self.update_conjured_item(item)
+
+            else:
+                self.update_ordinary_item(item)
 
 
 class Item:
