@@ -9,31 +9,20 @@ test_items = [
     Item("Sulfuras, Hand of Ragnaros", 10, 0),
     Item("Backstage passes to a TAFKAL80ETC concert", 10, 0),
 ]
+# Exlude Sulfuras
+test_items_except_sulfuras = [
+    item for item in test_items if item.name != "Sulfuras, Hand of Ragnaros"
+]
 
 
-class TestOrdinaryItems:
-    """Test ordinary items"""
-
-    # Exlude Sulfuras
-    test_items_end_day = [
-        item for item in test_items if item.name != "Sulfuras, Hand of Ragnaros"
-    ]
-
-    # At the end of each day our system lowers both values for every item
-    def test_end_of_day_ordinary_item(self):
-        """For ordinary item lower sell_in and quality"""
-        item = Item("Foo", 10, 10)
-        GildedRose([item]).update_quality()
-        assert item.sell_in == 9
-        assert item.quality == 9
-
+class TestCommonTraits:
     # The Quality of an item is never negative
     @pytest.mark.parametrize("item", test_items)
     def test_quality_never_negative(self, item):
         GildedRose([item]).update_quality()
         assert item.quality >= 0
 
-    @pytest.mark.parametrize("item", test_items_end_day)
+    @pytest.mark.parametrize("item", test_items_except_sulfuras)
     def test_end_of_day_lower_sell_in(self, item):
         """Lower sell in except for Sulfuras"""
         prev_sell_in = item.sell_in
@@ -46,6 +35,18 @@ class TestOrdinaryItems:
         item.quality = 50
         GildedRose([item]).update_quality()
         assert item.quality <= 50
+
+
+class TestOrdinaryItems:
+    """Test ordinary items"""
+
+    # At the end of each day our system lowers both values for every item
+    def test_end_of_day_ordinary_item(self):
+        """For ordinary item lower sell_in and quality"""
+        item = Item("Foo", 10, 10)
+        GildedRose([item]).update_quality()
+        assert item.sell_in == 9
+        assert item.quality == 9
 
     # Once the sell by date has passed, Quality degrades twice as fast
     def test_quality_ordinary_item_passed_date_degrades_twice(self):
