@@ -21,13 +21,35 @@ class Item:
 # It we are allowed to change Item class , this class is not necessary
 # Since we can add this method into Item, but the whole point of this exercise
 # to add feature to the legacy code of the goblin !
-class Normal(Item):
+class Normal:
+    def __init__(self, item) -> None:
+        self.item = item
+
+    # Properties so we dont have to use self.item.quality, self.item.sell_in
+    @property
+    def quality(self):
+        return self.item.quality
+
+    @quality.setter
+    def quality(self, value):
+        self.item.quality = value
+
+    @property
+    def sell_in(self):
+        return self.item.sell_in
+
+    @sell_in.setter
+    def sell_in(self, value):
+        self.item.sell_in = value
+
     max_quality = 50
+    min_quality = 0
+    deadline_sell_in = 0
     unit_delta = -1
 
     def increment_quality(self, increment_unit):
         """Handles quality increments and ensures quality >0 and <50 , invarient"""
-        if self.quality > 0 and self.quality < self.max_quality:
+        if self.quality > self.min_quality and self.quality < self.max_quality:
             self.quality = self.quality + increment_unit
         return self.quality
 
@@ -37,7 +59,7 @@ class Normal(Item):
 
     def update(self):
         # if -ve sell in quality degrades twice
-        if self.sell_in <= 0:
+        if self.sell_in <= self.deadline_sell_in:
             self.quality = self.increment_quality(2 * self.unit_delta)
         else:
             self.quality = self.increment_quality(self.unit_delta)
@@ -105,21 +127,9 @@ class GildedRose(object):
             "Conjured": Conjured,
         }
         item_class = special_items.get(item.name, Normal)
-        return item_class(item.name, item.sell_in, item.quality)
+        return item_class(item)
 
     def update(self):
         for item in self.items:
             gilded_item = self.item_factory(item)
             gilded_item.update()
-            self.update_item_attrs(item, gilded_item)
-
-    def update_item_attrs(self, item, gilded_item):
-        """
-        Update item attrs so I dont have to change all of tests since
-        tests assume GildedRose directly update item attrs.
-        ** Also since this is a legacy code , returning gilded items, instead of
-        directly manipulating items as in original code might break any existing code ! **
-        Can be avoided if gilded classes initialised with item object instead of item attrs.
-        """
-        for attr, value in gilded_item.__dict__.items():
-            setattr(item, attr, value)
