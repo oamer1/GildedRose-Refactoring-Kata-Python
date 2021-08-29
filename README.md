@@ -17,3 +17,5 @@ To add a feature, you must :
 - Step by step refactoring by Lomig [A Walk Through the Gilded Rose Kata](https://dev.to/lomig/a-walk-through-the-gilded-rose-kata-pt-1-do-not-break-anything-23b1)
 - [Writing Good Tests for the Gilded Rose Kata](https://coding-is-like-cooking.info/2013/03/writing-good-tests-for-the-gilded-rose-kata/)
 - [Why Most Solutions to Gilded Rose Miss The Bigger Picture](http://iamnotmyself.com/2012/12/08/why-most-solutions-to-gilded-rose-miss-the-bigger-picture/)
+- [A lesson-by-lesson Java implementation of the Emily Bache's Gilded Rose refactoring kata](https://github.com/d215steinberg/GildedRose-Java)
+
