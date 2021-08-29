@@ -93,19 +93,19 @@ class TestBackstagePasses:
 
     # Quality increases by 2 when there are 10 days or less
     @pytest.mark.parametrize("day", days_range_10_to_6_inc)
-    def test_backstage_passes_10_days_increase_quality_by_2(self, day):
+    def test_backstage_passes_10_days_or_less_increase_quality_by_2(self, day):
         item = Item("Backstage passes to a TAFKAL80ETC concert", day, 10)
         initial_quality = item.quality
         GildedRose([item]).update()
         assert item.quality == initial_quality + 2
 
     # Quality increase by 3 when there are 5 days or less but
-    @pytest.mark.parametrize("day", days_range_10_to_6_inc)
-    def test_backstage_passes_5_days_less_increase_quality_by_3(self, day):
+    @pytest.mark.parametrize("day", days_range_5_to_0_inc)
+    def test_backstage_passes_5_days_or_less_increase_quality_by_3(self, day):
         item = Item("Backstage passes to a TAFKAL80ETC concert", day, 5)
         initial_quality = item.quality
         GildedRose([item]).update()
-        assert item.quality == initial_quality + 2
+        assert item.quality == initial_quality + 3
 
     # Quality drops to 0 after the concert
     @pytest.mark.parametrize("day", days_sample_less_than_0)
