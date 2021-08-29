@@ -38,12 +38,12 @@ class TestCommonTraits:
         assert item.quality <= 50
 
 
-class TestOrdinaryItems:
-    """Test ordinary items"""
+class TestNormalItems:
+    """Test Normal items"""
 
     # At the end of each day our system lowers both values for every item
-    def test_end_of_day_ordinary_item(self):
-        """For ordinary item lower sell_in and quality"""
+    def test_end_of_day_Normal_item(self):
+        """For Normal item lower sell_in and quality"""
         item = Item("Foo", 10, 10)
         initial_quality = item.quality
         GildedRose([item]).update_quality()
@@ -51,7 +51,7 @@ class TestOrdinaryItems:
         assert item.quality == initial_quality - 1
 
     # Once the sell by date has passed, Quality degrades twice as fast
-    def test_quality_ordinary_item_passed_date_degrades_twice(self):
+    def test_quality_Normal_item_passed_date_degrades_twice(self):
         item = Item("Foo", 0, 10)
         initial_quality = item.quality
         GildedRose([item]).update_quality()
@@ -119,16 +119,16 @@ class TestConjured:
     """Test Conjured items"""
 
     # At the end of each day our system lowers both values for every item
-    def test_end_of_day_ordinary_item(self):
-        """For ordinary item lower sell_in and quality"""
+    def test_end_of_day_Normal_item(self):
+        """For Normal item lower sell_in and quality"""
         item = Item("Conjured", 10, 10)
         initial_quality = item.quality
         GildedRose([item]).update_quality()
         assert item.sell_in == 9
         assert item.quality == initial_quality - 2
 
-    # Once the sell by date has passed, Quality degrades twice as fast as ordinary
-    def test_quality_Conjured_item_passed_date_degrades_twice_as_ordinary(self):
+    # Once the sell by date has passed, Quality degrades twice as fast as Normal
+    def test_quality_Conjured_item_passed_date_degrades_twice_as_Normal(self):
         item = Item("Conjured", 0, 10)
         initial_quality = item.quality
         GildedRose([item]).update_quality()

@@ -11,8 +11,8 @@ class GildedRose(object):
             quality = quality + increment_unit
         return quality
 
-    def update_ordinary_item(self, item):
-        """Handle the logic of ordinary item"""
+    def update_Normal_item(self, item):
+        """Handle the logic of Normal item"""
         # if -ve sell in quality degrades twice
         if item.sell_in <= 0:
             item.quality = self.increment_quality(item.quality, -2)
@@ -58,7 +58,7 @@ class GildedRose(object):
                 "Sulfuras, Hand of Ragnaros": self.update_sulfuras_item,
                 "Conjured": self.update_conjured_item,
             }
-            update_func = update_factory.get(item.name, self.update_ordinary_item)
+            update_func = update_factory.get(item.name, self.update_Normal_item)
             return update_func(item)
 
 
