@@ -40,11 +40,21 @@ class GildedRose(object):
         item.quality = self.increment_quality(item.quality, 1)
         item.sell_in = item.sell_in - 1
 
+    def update_conjured_item(self, item):
+        """Handle the logic of Conjured item"""
+        # if -ve sell in quality degrades twice
+        if item.sell_in <= 0:
+            item.quality = self.increment_quality(item.quality, -4)
+        else:
+            item.quality = self.increment_quality(item.quality, -2)
+        item.sell_in = item.sell_in - 1
+
     def update_quality(self):
         special_items = [
             "Aged Brie",
             "Backstage passes to a TAFKAL80ETC concert",
             "Sulfuras, Hand of Ragnaros",
+            "Conjured",
         ]
         for item in self.items:
             if item.name not in special_items:
@@ -58,6 +68,9 @@ class GildedRose(object):
 
             if item.name == "Sulfuras, Hand of Ragnaros":
                 self.update_sulfuras_item(item)
+
+            if item.name == "Conjured":
+                self.update_conjured_item(item)
 
 
 class Item:

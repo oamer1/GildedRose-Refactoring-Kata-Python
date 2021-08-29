@@ -8,6 +8,7 @@ test_items = [
     Item("Aged Brie", 10, 0),
     Item("Sulfuras, Hand of Ragnaros", 10, 0),
     Item("Backstage passes to a TAFKAL80ETC concert", 10, 0),
+    Item("Conjured", 10, 0),
 ]
 # Exlude Sulfuras
 test_items_except_sulfuras = [
@@ -44,9 +45,10 @@ class TestOrdinaryItems:
     def test_end_of_day_ordinary_item(self):
         """For ordinary item lower sell_in and quality"""
         item = Item("Foo", 10, 10)
+        initial_quality = item.quality
         GildedRose([item]).update_quality()
         assert item.sell_in == 9
-        assert item.quality == 9
+        assert item.quality == initial_quality - 1
 
     # Once the sell by date has passed, Quality degrades twice as fast
     def test_quality_ordinary_item_passed_date_degrades_twice(self):
@@ -111,3 +113,23 @@ class TestBackstagePasses:
         item = Item("Backstage passes to a TAFKAL80ETC concert", day, 5)
         GildedRose([item]).update_quality()
         assert item.quality == 0
+
+
+class TestConjured:
+    """Test Conjured items"""
+
+    # At the end of each day our system lowers both values for every item
+    def test_end_of_day_ordinary_item(self):
+        """For ordinary item lower sell_in and quality"""
+        item = Item("Conjured", 10, 10)
+        initial_quality = item.quality
+        GildedRose([item]).update_quality()
+        assert item.sell_in == 9
+        assert item.quality == initial_quality - 2
+
+    # Once the sell by date has passed, Quality degrades twice as fast as ordinary
+    def test_quality_Conjured_item_passed_date_degrades_twice_as_ordinary(self):
+        item = Item("Conjured", 0, 10)
+        initial_quality = item.quality
+        GildedRose([item]).update_quality()
+        assert item.quality == initial_quality - 4
