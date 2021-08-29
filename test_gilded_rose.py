@@ -20,21 +20,21 @@ class TestCommonTraits:
     # The Quality of an item is never negative
     @pytest.mark.parametrize("item", test_items)
     def test_quality_never_negative(self, item):
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality >= 0
 
     @pytest.mark.parametrize("item", test_items_except_sulfuras)
     def test_end_of_day_lower_sell_in(self, item):
         """Lower sell in except for Sulfuras"""
         prev_sell_in = item.sell_in
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.sell_in == prev_sell_in - 1
 
     # The Quality of an item is never more than 50
     @pytest.mark.parametrize("item", test_items)
     def test_quality_never_greater_50(self, item):
         item.quality = 50
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality <= 50
 
 
@@ -46,7 +46,7 @@ class TestNormalItems:
         """For Normal item lower sell_in and quality"""
         item = Item("Foo", 10, 10)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.sell_in == 9
         assert item.quality == initial_quality - 1
 
@@ -54,7 +54,7 @@ class TestNormalItems:
     def test_quality_Normal_item_passed_date_degrades_twice(self):
         item = Item("Foo", 0, 10)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality == initial_quality - 2
 
 
@@ -64,7 +64,7 @@ class TestAgedBrie:
     def test_aged_brie_gets_older_quality_increase(self):
         item = Item("Aged Brie", 10, 10)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality > initial_quality
 
 
@@ -74,7 +74,7 @@ class TestSulfuras:
         item = Item("Sulfuras, Hand of Ragnaros", 10, 10)
         initial_sell_in = item.sell_in
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality == initial_quality
         assert item.sell_in == initial_sell_in
 
@@ -88,7 +88,7 @@ class TestBackstagePasses:
     def test_backstage_passes_gets_older_quality_increase(self):
         item = Item("Backstage passes to a TAFKAL80ETC concert", 10, 10)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality > initial_quality
 
     # Quality increases by 2 when there are 10 days or less
@@ -96,7 +96,7 @@ class TestBackstagePasses:
     def test_backstage_passes_10_days_increase_quality_by_2(self, day):
         item = Item("Backstage passes to a TAFKAL80ETC concert", day, 10)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality == initial_quality + 2
 
     # Quality increase by 3 when there are 5 days or less but
@@ -104,14 +104,14 @@ class TestBackstagePasses:
     def test_backstage_passes_5_days_less_increase_quality_by_3(self, day):
         item = Item("Backstage passes to a TAFKAL80ETC concert", day, 5)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality == initial_quality + 2
 
     # Quality drops to 0 after the concert
     @pytest.mark.parametrize("day", days_sample_less_than_0)
     def test_backstage_concert_finished_quality_0(self, day):
         item = Item("Backstage passes to a TAFKAL80ETC concert", day, 5)
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality == 0
 
 
@@ -123,7 +123,7 @@ class TestConjured:
         """For Normal item lower sell_in and quality"""
         item = Item("Conjured", 10, 10)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.sell_in == 9
         assert item.quality == initial_quality - 2
 
@@ -131,5 +131,5 @@ class TestConjured:
     def test_quality_Conjured_item_passed_date_degrades_twice_as_Normal(self):
         item = Item("Conjured", 0, 10)
         initial_quality = item.quality
-        GildedRose([item]).update_quality()
+        GildedRose([item]).update()
         assert item.quality == initial_quality - 4
