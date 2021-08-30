@@ -18,7 +18,7 @@ class Item:
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
 
 
-# It we are allowed to change Item class , this class is not necessary
+# If we are allowed to change Item class , this class is not necessary
 # Since we can add this method into Item, but the whole point of this exercise
 # to add feature to the legacy code of the goblin !
 class Normal:
