@@ -48,7 +48,7 @@ class Normal:
     unit_delta = -1
 
     def increment_quality(self, increment_unit):
-        """Handles quality increments and ensures quality >0 and <50 , invarient"""
+        """Handles quality increments and ensures quality >0 and <50 , invariant"""
         if self.quality > self.min_quality and self.quality < self.max_quality:
             self.quality = self.quality + increment_unit
         return self.quality
